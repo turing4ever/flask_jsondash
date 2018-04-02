@@ -328,7 +328,8 @@ def vegalite():
     try:
         with open(filename, 'r') as chartjson:
             data = json.load(chartjson)
-            if data.get('data', {}).get('url') is not None:
+            if isinstance(data.get('data', {}), dict) and\
+                    data.get('data', {}).get('url') is not None:
                 datapath = '{}/examples/vegalite/{}'.format(
                     cwd, data['data']['url']
                 )
