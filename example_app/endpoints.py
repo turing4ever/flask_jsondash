@@ -273,7 +273,7 @@ def sigma():
     filename = '{}/examples/sigma/{}.json'.format(cwd, chart_name)
     try:
         with open(filename, 'r') as chartjson:
-            return chartjson.read()
+            return jsonify(json.load(chartjson))
     except IOError:
         pass
     return jsonify({})
@@ -287,7 +287,7 @@ def flamegraph():
     filename = '{}/examples/flamegraph/{}.json'.format(cwd, chart_name)
     try:
         with open(filename, 'r') as chartjson:
-            return chartjson.read()
+            return jsonify(json.load(chartjson))
     except IOError:
         pass
     return jsonify({})
@@ -307,7 +307,7 @@ def cytoscape():
     filename = '{}/examples/cytoscape/{}.json'.format(cwd, chart_name)
     try:
         with open(filename, 'r') as chartjson:
-            return chartjson.read()
+            return jsonify(json.load(chartjson))
     except IOError:
         pass
     return jsonify({})
@@ -327,8 +327,7 @@ def vegalite():
     filename = '{}/examples/vegalite/{}.json'.format(cwd, chart_type)
     try:
         with open(filename, 'r') as chartjson:
-            chartjson = chartjson.read()
-            data = json.loads(chartjson)
+            data = json.load(chartjson)
             if data.get('data', {}).get('url') is not None:
                 datapath = '{}/examples/vegalite/{}'.format(
                     cwd, data['data']['url']
@@ -344,7 +343,7 @@ def vegalite():
                     ))
                     return jsonify(data)
             else:
-                return chartjson
+                return jsonify(data)
     except IOError:
         pass
     return jsonify({})
@@ -354,10 +353,10 @@ def vegalite():
 @app.route('/plotly')
 def plotly():
     """Fake endpoint."""
-    chart_type = request.args.get('chart', 'line')
+    chart_type = request.args.get('chart', 'boxplot')
     filename = '{}/examples/plotly/{}.json'.format(cwd, chart_type)
     with open(filename, 'r') as chartjson:
-        return chartjson.read()
+        return jsonify(json.load(chartjson))
     return jsonify({})
 
 
@@ -367,7 +366,7 @@ def plotly_dynamic():
     """Fake endpoint."""
     filename = '{}/examples/plotly/bar_line_dynamic.json'.format(cwd)
     with open(filename, 'r') as chartjson:
-        return chartjson.read()
+        return jsonify(json.load(chartjson))
     return jsonify({})
 
 
@@ -376,7 +375,7 @@ def plotly_dynamic():
 def timeline():
     """Fake endpoint."""
     with open('{}/examples/timeline3.json'.format(cwd), 'r') as timelinejson:
-        return timelinejson.read()
+        return jsonify(json.load(timelinejson))
     return jsonify({})
 
 
@@ -393,7 +392,7 @@ def dtable():
         ])
     fname = 'dtable-override' if 'override' in request.args else 'dtable'
     with open('{}/examples/{}.json'.format(os.getcwd(), fname), 'r') as djson:
-        return djson.read()
+        return jsonify(json.load(djson))
     return jsonify({})
 
 
@@ -615,7 +614,7 @@ def circlepack():
         # Build a very large dataset
         return jsonify(recursive_d3_data())
     with open('{}/examples/flare.json'.format(cwd), 'r') as djson:
-        return djson.read()
+        return jsonify(json.load(djson))
     return jsonify({})
 
 
@@ -647,7 +646,7 @@ def dendro():
         return jsonify(recursive_d3_data())
     filename = 'flare-simple' if 'simple' in request.args else 'flare'
     with open('{}/examples/{}.json'.format(cwd, filename), 'r') as djson:
-        return djson.read()
+        return jsonify(json.load(djson))
     return jsonify({})
 
 
@@ -668,7 +667,7 @@ def graphdata():
     """Fake endpoint."""
     if 'filetree' in request.args:
         with open('{}/examples/filetree_digraph.dot'.format(cwd), 'r') as dot:
-            return jsonify(dict(graph=dot.read()))
+            return jsonify(dict(graph=json.load(dot)))
     if 'simple' in request.args:
         graphdata = """
         digraph {
@@ -681,7 +680,7 @@ def graphdata():
         """
         return jsonify(dict(graph=graphdata))
     nodes = list('abcdefghijkl')
-    node_data = '\n'.join([
+    node_data = "\n".join([
         '{0} -> {1};'.format(choice(nodes), choice(nodes))
         for _ in range(10)
     ])
